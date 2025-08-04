@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Welcome{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+  <h1 class="display-5 fw-bold fade-in" style="animation-delay: 0.2s;">
+    🚀 Resume Scorer
+  </h1>
+  <p class="lead fade-in" style="animation-delay: 0.4s;">
+    Upload or paste your resume to get smart AI feedback, suggestions, and a personalized score instantly.
+  </p>
+  <a href="/register" class="btn btn-primary btn-lg mt-4 fade-in" style="animation-delay: 0.6s;">
+    <i class="fas fa-play-circle me-2"></i> Get Started
+  </a>
+</div>
+
+<script>
+  // Add fade-in delay to elements with fade-in class
+  window.addEventListener("DOMContentLoaded", () => {
+    const fadeEls = document.querySelectorAll(".fade-in");
+    fadeEls.forEach((el, i) => {
+      el.style.opacity = 0;
+      el.style.animation = `fadeIn 0.8s ease forwards`;
+      el.style.animationDelay = el.style.animationDelay || `${i * 0.2}s`;
+    });
+  });
+</script>
+{% endblock %}

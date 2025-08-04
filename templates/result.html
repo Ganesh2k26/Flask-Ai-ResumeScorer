@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Analysis Result{% endblock %}
+
+{% block content %}
+<div class="card shadow-lg p-4 fade-in mx-auto mt-5" style="max-width: 800px;">
+  <h3 class="text-success text-center mb-3">
+    <i class="fas fa-chart-line me-2"></i> Score: {{ final_score }}% – {{ level }}
+  </h3>
+  <hr>
+  <div class="accordion" id="resumeAnalysis">
+    {% for category, data in analysis.items() %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading{{ loop.index }}">
+        <button class="accordion-button {{ 'collapsed' if not loop.first }}" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}"
+                aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse{{ loop.index }}">
+          <strong>{{ category.capitalize() }}</strong> — {{ data.score }}%
+        </button>
+      </h2>
+      <div id="collapse{{ loop.index }}" class="accordion-collapse collapse {{ 'show' if loop.first }}"
+           data-bs-parent="#resumeAnalysis">
+        <div class="accordion-body">
+          <p><strong>✅ Matched:</strong> {{ data.matched | join(', ') if data.matched else 'None' }}</p>
+          <p><strong>❌ Missing:</strong> {{ data.missing | join(', ') if data.missing else 'None' }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-5">
+    <h5><i class="fas fa-lightbulb me-2 text-warning"></i> Gemini AI Suggestions</h5>
+    <div class="bg-light p-3 border rounded">
+      {{ suggestion }}
+    </div>
+  </div>
+
+  <div class="text-center mt-4">
+    <a href="/resume" class="btn btn-outline-secondary">
+      🔁 Analyze Another Resume
+    </a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="card p-4 shadow fade-in mx-auto mt-5" style="max-width: 600px;">
+  <h3 class="mb-4 text-center text-primary">
+    <i class="fas fa-file-alt me-2"></i> Analyze Your Resume
+  </h3>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="mb-4">
+      <label for="resumeBox" class="form-label">📋 Paste your resume</label>
+      <textarea name="resume" id="resumeBox" rows="8" class="form-control" placeholder="Paste resume text..." aria-describedby="wordCount"></textarea>
+      <div class="form-text text-end" id="wordCount">0 words</div>
+    </div>
+    <div class="text-center fw-bold my-3 text-muted">— OR —</div>
+    <div class="mb-4">
+      <label for="resumeUpload" class="form-label">📄 Upload PDF Resume</label>
+      <input type="file" name="resume_file" id="resumeUpload" accept="application/pdf" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success w-100">
+      <i class="fas fa-search me-2"></i> Analyze Resume
+    </button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const textarea = document.getElementById("resumeBox");
+  const wordCount = document.getElementById("wordCount");
+  textarea.addEventListener("input", () => {
+    const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0);
+    wordCount.textContent = `${words.length} word${words.length !== 1 ? 's' : ''}`;
+  });
+</script>
+{% endblock %}
