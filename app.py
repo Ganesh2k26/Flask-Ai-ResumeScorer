@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session,flash
 import csv, os, re
 import fitz  # PyMuPDF
 import google.generativeai as genai
@@ -77,6 +77,38 @@ def extract_text_from_pdf(pdf_path):
             return "".join(page.get_text() for page in doc)
     except Exception as e:
         return f"Error extracting text: {str(e)}"
+    
+def valid_email(email):
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email)
+
+def valid_password(password):
+    if len(password) < 8:
+        return False
+    if not re.search(r'[A-Z]', password):
+        return False
+    if not re.search(r'[a-z]', password):
+        return False
+    if not re.search(r'\d', password):
+        return False
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        return False
+    return True
+
+def unique_username(name):
+    name = name.strip().lower()
+    if not name:
+        return False
+    if len(name) < 3 or len(name) > 20:
+        return False
+    if not re.match(r'^[a-zA-Z\s]+$', name):
+        return False   
+    with open(CSV_PATH, 'r') as file:
+        for row in csv.reader(file):
+            if row and row[0].strip().lower() == name:
+                return False
+    return True
+    
 
 @app.route('/')
 def home():
@@ -88,6 +120,16 @@ def register():
         name = request.form['name'].strip().title()
         email = request.form['email'].strip()
         password = request.form['pass']
+        if not unique_username(name):
+            flash("Username already exists or is invalid", 'error')
+            return redirect(url_for('register'))
+        if not valid_email(email):
+            flash("Invalid email format", 'error')
+            return redirect(url_for('register'))
+        if not valid_password(password):
+            flash("Password must be at least 8 characters long, contain uppercase, lowercase, digits, and special characters", 'error')
+            return redirect(url_for('register'))
+        
         with open(CSV_PATH, 'a', newline='') as file:
             csv.writer(file).writerow([name, email, password])
         return render_template('results.html', name=name)
