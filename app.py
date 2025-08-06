@@ -3,6 +3,7 @@ import csv, os, re
 import fitz  # PyMuPDF
 import google.generativeai as genai
 from dotenv import load_dotenv
+import markdown
 
 load_dotenv()
 
@@ -225,6 +226,33 @@ def reset():
         return "<h3>Data reset successfully</h3>"
     except Exception as e:
         return f"<h3>Error resetting data: {str(e)}</h3>"
+    
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    chat_history = session.get('chat_history', [])
+    response = ""
+
+    if request.method == 'POST':
+        user_msg = request.form.get('user_msg', '').strip()
+        if user_msg:
+            try:
+                model = genai.GenerativeModel("gemini-1.5-flash")
+                convo = model.start_chat(history=[])
+                result = convo.send_message(user_msg)
+
+                # Safely access .text
+                response = markdown.markdown(result.text.strip())
+            except Exception as e:
+                response = f"⚠️ Gemini Error: {str(e)}"
+
+            chat_history.append({'user': user_msg, 'assistant': response})
+            session['chat_history'] = chat_history
+
+    return render_template('chat.html', chat_history=chat_history)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
