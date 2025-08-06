@@ -16,7 +16,7 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 gemini_key = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=gemini_key)
 
-CSV_PATH = r'D:\GANESH\MINI PROJECTS\Flask\portal\user.csv'
+CSV_PATH = os.path.join(os.path.dirname(__file__), 'user.csv')
 
 skills = {
     "technical": {
