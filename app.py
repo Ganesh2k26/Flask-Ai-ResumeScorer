@@ -18,6 +18,7 @@ genai.configure(api_key=gemini_key)
 
 CSV_PATH = os.path.join(os.path.dirname(__file__), 'user.csv')
 
+
 skills = {
     "technical": {
         "keywords": ["python", "flask", "api", "machine learning", "deep learning", "nlp", "html", "css", "javascript", "git", "github", "sql", "rest api", "tensorflow", "pandas", "numpy"],
